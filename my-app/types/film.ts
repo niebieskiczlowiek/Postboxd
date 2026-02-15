@@ -6,7 +6,7 @@ import ProductionCompany from "@/types/production_company";
 
 import { LanguageCode } from 'iso-639-1';
 
-export default interface Movie {
+export interface Film {
   adult: boolean,
   backdrop_path: string,
   belongs_to_collection: Collection | null,
@@ -32,5 +32,16 @@ export default interface Movie {
   video: boolean,
   vote_average: number,
   vote_count: number
+}
+
+export interface FilmSet {
+    page: number;
+    dates: {
+      maximum: string,
+      minimum: string
+    }
+    results: Film[];
+    total_pages: number;
+    total_results: number;
 }
 
