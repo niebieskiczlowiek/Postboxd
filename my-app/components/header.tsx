@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { Search, Bell, Menu, X } from "lucide-react"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
+import SignInDialog from "./sign-in-dialog"
 
 const navLinks = [
     { label: "Films", href: "/films" },
@@ -78,12 +79,13 @@ export const Header = () => {
                 </div>
                 </div>
             </Link>
-            <Link
+            {/* <Link
                 href="/sign-in"
                 className="hidden rounded bg-primary px-3 py-1 text-sm font-semibold text-primary-foreground transition-colors hover:bg-[hsl(145,100%,38%)] md:block"
             >
                 Sign In
-            </Link>
+            </Link> */}
+            <SignInDialog />
 
             {/* Mobile menu button */}
             <button

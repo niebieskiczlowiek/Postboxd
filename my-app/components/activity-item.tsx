@@ -23,7 +23,7 @@ const ActivityItem = ({
                   <div className="mt-0.5 h-6 w-6 shrink-0 rounded-full bg-secondary" />
                 </ItemMedia>
                 <ItemDescription className="flex flex-col gap-0.5">
-                  <p className="test-sm">
+                  <p>
                     <span className="font-bold text-[hsl(0,0%,95%)]">
                       {user}
                     </span>{" "}
