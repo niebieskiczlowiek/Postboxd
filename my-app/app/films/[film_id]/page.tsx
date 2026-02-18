@@ -12,6 +12,8 @@ import Image from "next/image";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import ToolTipBtn from "@/components/tool-tip-btn"
 import RatingChart from "@/components/rating-chart"
+import { ReviewService } from "@/services/review"
+import ReviewsBlock from "@/components/reviews-block"
 
 const reviews = [
   {
@@ -40,19 +42,19 @@ const reviews = [
 const FilmPage = async ({
   params,
 }: { params: Promise<{ film_id: string }> }) => {
-  const { film_id } = await params
+  const { film_id } = await params;
 
-  console.log("ID")
-  console.log(film_id)
-
-  const [ filmDetails, similiarFilms ] = await Promise.all([
+  const [ filmDetails, similiarFilms, filmReviews ] = await Promise.all([
     FilmService.getDetails(Number(film_id)).catch(() => null),
     FilmService.getSimilar(Number(film_id)).catch(() => null),
+    ReviewService.getByFilm(Number(film_id)).catch(() => null)
   ]);
 
-  if (!filmDetails || !similiarFilms) {
+  if (!filmDetails || !similiarFilms || !filmReviews) {
     notFound();
   }
+
+  console.log(filmReviews)  
 
   return (
     <div>
@@ -231,49 +233,11 @@ const FilmPage = async ({
 
         {/* Reviews */}
         <section className="mt-10">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-              Popular Reviews
-            </h2>
-            <Link
-              href={`/films/${film_id}/reviews`}
-              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:text-primary"
-            >
-              More
-            </Link>
-          </div>
-          <div className="flex flex-col gap-4">
-            {reviews.map((review) => (
-              <article
-                key={review.user}
-                className="rounded border border-border bg-card p-4"
-              >
-                <div className="flex items-center gap-2">
-                  <div className="h-6 w-6 rounded-full bg-secondary" />
-                  <span className="text-sm font-bold text-[hsl(0,0%,95%)]">
-                    {review.user}
-                  </span>
-                  <StarRating rating={review.rating} size="sm" />
-                  <span className="text-xs text-muted-foreground">
-                    {review.date}
-                  </span>
-                </div>
-                <p className="mt-2 text-sm leading-relaxed text-foreground">
-                  {review.text}
-                </p>
-                <div className="mt-3 flex items-center gap-4">
-                  <button type="button" className="flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-primary">
-                    <Heart className="h-3 w-3" />
-                    <span>{review.likes} likes</span>
-                  </button>
-                  <button type="button" className="flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-primary">
-                    <MessageSquare className="h-3 w-3" />
-                    <span>Reply</span>
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
+          <ReviewsBlock 
+            title="Popular reviews"
+            reviews={filmReviews}
+            film_id={film_id}
+          />
         </section>
 
         {/* Similar films */}

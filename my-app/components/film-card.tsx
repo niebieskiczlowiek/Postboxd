@@ -7,7 +7,7 @@ interface FilmCardProps {
   title: string
   posterPath: string
   rating?: number
-  href?: string
+  film_id: number
   size?: "sm" | "md" | "lg"
 }
 
@@ -15,12 +15,12 @@ export const FilmCard = ({
   title,
   posterPath,
   rating,
-  href = "/films/1",
+  film_id,
   size = "md",
 }: FilmCardProps) => {
   return (
     <Link
-      href={href}
+      href={`/films/${film_id}`}
       className="group flex flex-col gap-1"
     >
       <div

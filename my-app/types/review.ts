@@ -8,8 +8,8 @@ export interface Review {
         rating: string
     }
     content: string,
-    created_at: string,
-    updated_at: string,
+    created_at: Date,
+    updated_at: Date,
     iso_639_1: string,
     media_id: number,
     media_title: string,
