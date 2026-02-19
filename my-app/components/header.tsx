@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Search, Bell, Menu, X } from "lucide-react"
 import { useState } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils/styles"
 import SignInDialog from "./sign-in-dialog"
 
 const navLinks = [
