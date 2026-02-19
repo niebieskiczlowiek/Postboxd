@@ -1,7 +1,13 @@
+import * as z from "zod";
+
 const BASE_URL = process.env.TMDB_API_BASE_URL
 const API_KEY = process.env.TMDB_API_READ_ACCESS_TOKEN
 
-export async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+export async function apiFetch<T>(
+    endpoint: string, 
+    schema?: z.Schema<T>, 
+    options: RequestInit = {}
+): Promise<T> {
     const url = `${BASE_URL}${endpoint}`;
     
     const response = await fetch(url, {
@@ -20,5 +26,10 @@ export async function apiFetch<T>(endpoint: string, options: RequestInit = {}): 
         throw new Error(`API Error: ${response.status} ${response.statusText}`);
     }
 
-    return response.json();
+    const rawData = await response.json();
+    if (schema) {
+        return schema.parse(rawData);
+    }
+
+    return rawData as T;
 };

@@ -3,6 +3,7 @@ import Genre from "@/types/genre";
 import Country from "@/types/country";
 import SpokenLanguage from "@/types/spoken_language";
 import ProductionCompany from "@/types/production_company";
+import { DataSet } from "./dataSet";
 
 import { LanguageCode } from 'iso-639-1';
 
@@ -34,14 +35,11 @@ export interface Film {
   vote_count: number
 }
 
-export interface FilmSet {
-    page: number;
-    dates: {
-      maximum: string,
-      minimum: string
-    }
-    results: Film[];
-    total_pages: number;
-    total_results: number;
+export type FilmSet = DataSet & {
+  results: Film[]
+  dates: {
+    maximum: string,
+    minimum: string,
+  }
 }
 

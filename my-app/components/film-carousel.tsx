@@ -38,7 +38,7 @@ const FilmCarousel = ({
                     align: "start",
                     loop: true
                 }}
-                className="w-full"
+                className="w-full @container"
             >
                 <CarouselContent>
                     {films.map((film, index) => (
@@ -47,7 +47,8 @@ const FilmCarousel = ({
                                 key={film.title}
                                 title={film.title}
                                 posterPath={`https://image.tmdb.org/t/p/original/${film.poster_path}`}
-                                rating={film.vote_average/2}
+                                film_id={film.id}
+                                rating={film.vote_average}
                             />
                         </CarouselItem>
                     ))}
