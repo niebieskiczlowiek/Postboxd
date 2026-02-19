@@ -22,3 +22,8 @@ export interface Review {
 export type ReviewSet = DataSet & { 
     results: Array<Omit<Review, "iso_639_1" | "media_id" | "media_title" | "media_type">>,
 }
+
+export type Rating = {
+    rating: number,
+    count: number
+}

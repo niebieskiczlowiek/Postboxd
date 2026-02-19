@@ -18,17 +18,11 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import { StarRating } from "./star-rating"
+import { Rating } from "@/types/review"
 
 export const description = "A bar chart"
 
-const chartData = [
-  { rating: "0 star ratings", ratings: 186 },
-  { rating: "☆ ratings", ratings: 305 },
-  { rating: "☆☆ star ratings", ratings: 237 },
-  { rating: "☆☆☆ star ratings", ratings: 73 },
-  { rating: "☆☆☆☆ star ratings", ratings: 209 },
-  { rating: "☆☆☆☆☆ star ratings", ratings: 214 },
-]
+
 
 const chartConfig = {
   desktop: {
@@ -38,14 +32,31 @@ const chartConfig = {
 } satisfies ChartConfig
 
 interface RatingChartProps {
-    rating: number,
+    average_rating: number,
+    ratings: Rating[],
     maxStars?: number,
 }
 
 const RatingChart = ({
-    rating,
+    average_rating,
+    ratings,
     maxStars = 5
 }: RatingChartProps) => {
+  // const chartData = [
+  //   { rating: "0 star ratings", ratings: 186 },
+  //   { rating: "☆ ratings", ratings: 305 },
+  //   { rating: "☆☆ star ratings", ratings: 237 },
+  //   { rating: "☆☆☆ star ratings", ratings: 73 },
+  //   { rating: "☆☆☆☆ star ratings", ratings: 209 },
+  //   { rating: "☆☆☆☆☆ star ratings", ratings: 214 },
+  // ]
+  const chartData = ratings.map((r) => {
+    return {
+      rating: r.rating > 0 ? `${"☆".repeat(r.rating)}` : "-☆ ratings",
+      count: r.count
+    }
+  })
+
   return (
     <Card className="w-full">
         <CardHeader>
@@ -54,8 +65,8 @@ const RatingChart = ({
 
         <CardContent className="flex flex-col gap-8 md:flex-row md:items-center">
             <div className="flex flex-col items-center gap-2 shrink-0 border-r border-border/50 pr-8">
-                <span className="text-4xl font-bold">{rating}</span>
-                <StarRating rating={rating} size="lg" />
+                <span className="text-4xl font-bold">{average_rating}</span>
+                <StarRating rating={average_rating} size="lg" />
                 <span className="text-xs text-muted-foreground">
                     145,832 ratings
                 </span>
@@ -79,7 +90,7 @@ const RatingChart = ({
                       } 
                     />
                     <Bar 
-                        dataKey="ratings"
+                        dataKey="count"
                         fill="var(--color-desktop)" 
                         radius={4} 
                         barSize={40}

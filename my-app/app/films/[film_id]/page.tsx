@@ -1,42 +1,23 @@
-// "use client";
+import FilmCarousel from "@/components/film-carousel";
+import ToolTipBtn from "@/components/tool-tip-btn";
+import RatingChart from "@/components/rating-chart";
+import ReviewsBlock from "@/components/reviews-block";
+import { ReviewService } from "@/services/review";
+import { FilmService } from "@/services/film";
+import { Rating } from "@/types/review";
 
-
-import Link from "next/link"
-import { notFound } from "next/navigation"
-import { StarRating } from "@/components/star-rating"
-import { Heart, Eye, Clock, List, MessageSquare, Share2 } from "lucide-react"
-import FilmCarousel from "@/components/film-carousel"
-import { FilmService } from "@/services/film"
-import { Film, FilmSet } from "@/types/film";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import Image from "next/image";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import ToolTipBtn from "@/components/tool-tip-btn"
-import RatingChart from "@/components/rating-chart"
-import { ReviewService } from "@/services/review"
-import ReviewsBlock from "@/components/reviews-block"
+import { Heart, Eye, Clock, List, Share2 } from "lucide-react";
 
-const reviews = [
-  {
-    user: "filmfan42",
-    rating: 4.5,
-    text: "An absolutely breathtaking sequel that expands on the first film in every way. The sound design alone is worth the ticket price. Villeneuve has cemented himself as one of the great visual storytellers of our time.",
-    date: "Feb 8, 2026",
-    likes: 234,
-  },
-  {
-    user: "cinemascope",
-    rating: 5,
-    text: "A masterpiece of modern science fiction. The way it balances spectacle with intimate character work is remarkable. Chalamet has truly come into his own.",
-    date: "Feb 6, 2026",
-    likes: 189,
-  },
-  {
-    user: "reel_talk",
-    rating: 4,
-    text: "Visually stunning but I wish we got more time with some of the supporting characters. Still one of the best blockbusters in recent memory.",
-    date: "Feb 5, 2026",
-    likes: 98,
-  },
+const ratings: Rating[] = [
+  { rating: 0, count: 23 },
+  { rating: 1, count: 67 },
+  { rating: 2, count: 56 },
+  { rating: 3, count: 167 },
+  { rating: 4, count: 289 },
+  { rating: 5, count: 104 }
 ]
 
 const FilmPage = async ({
@@ -177,7 +158,10 @@ const FilmPage = async ({
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <RatingChart rating={filmDetails.vote_average} />
+              <RatingChart 
+                average_rating={filmDetails.vote_average} 
+                ratings={ratings}
+              />
             </div>
           </div>
         </div>
