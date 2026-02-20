@@ -23,7 +23,6 @@ export async function POST(request: Request) {
 
         if (!passwordsMatch) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         
-        
         const token = await createToken({ 
             id: id,
             email: email
@@ -32,7 +31,7 @@ export async function POST(request: Request) {
         const cookieStore = await cookies();
         cookieStore.set("auth-token", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV==="production",
+            secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
             maxAge: 60 * 60 * 2,
             path: "/",

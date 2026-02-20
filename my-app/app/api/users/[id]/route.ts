@@ -8,7 +8,7 @@ export async function GET(
     try {
         const userId = Number(params.id);
         
-        const user = prisma.user.findUnique({
+        const user = await prisma.user.findUnique({
             where: { id: userId },
             omit: { 
                 password: true,
