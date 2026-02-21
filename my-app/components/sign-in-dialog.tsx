@@ -31,8 +31,6 @@ const SignInDialog = ({
     const { register, formState: { errors, isSubmitting }} = form;
 
     const onSubmit = async (data: signInValues) => {
-        const { username, password } = data;
-
         try {
             await AuthService.signIn(data);
             window.location.href = "/u/me";

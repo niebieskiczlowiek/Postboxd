@@ -7,6 +7,8 @@ import { useState } from "react"
 import { cn } from "@/lib/utils/styles"
 import SignInDialog from "./sign-in-dialog"
 import { useAuth } from "@/providers/root-provider"
+import ProfileMenu from "./profile-menu"
+import { AuthService } from "@/services/auth"
 
 const navLinks = [
     { label: "Films", href: "/films" },
@@ -17,10 +19,7 @@ const navLinks = [
 
 export const Header = () => {
     const pathname = usePathname();
-    const [mobileOpen, setMobileOpen]= useState<boolean>(false);
-    const { user, isLoading } = useAuth();
-
-    console.log(user);
+    const { user, isLoading, signOut } = useAuth();
 
     return (
         <header className="sticky top-0 z-50 border-b border-border bg-[hsl(200,20%,7%)]">
@@ -74,68 +73,22 @@ export const Header = () => {
                 <Bell className="h-4 w-4" />
             </button>
             {user ? (
-                <Link
-                    href="/profile"
-                    className="hidden items-center gap-2 md:flex"
-                >
-                    <div className="h-7 w-7 overflow-hidden rounded-full bg-secondary">
+                <div className="h-7 w-7 overflow-hidden rounded-full bg-secondary">
                     <div className="flex h-full w-full items-center justify-center text-xs font-bold text-muted-foreground">
-                        U
+                        <ProfileMenu
+                            btnText="U"
+                            btnClassname=""
+                            content={
+                                [
+                                    { items: [{text: "Logout", fn: signOut}] }
+                                ]
+                            }
+                        />
                     </div>
-                    </div>
-                </Link>
+                </div>
             ): <SignInDialog />}
-            
-
-            {/* Mobile menu button */}
-            <button
-                type="button"
-                className="rounded p-1.5 text-muted-foreground transition-colors hover:text-[hsl(0,0%,95%)] md:hidden"
-                onClick={() => setMobileOpen(!mobileOpen)}
-                aria-label="Toggle menu"
-                aria-expanded={mobileOpen}
-            >
-                {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
             </div>
         </div>
-
-        {/* Mobile Nav */}
-        {mobileOpen && (
-            <nav className="border-t border-border bg-[hsl(200,20%,7%)] px-4 py-3 md:hidden" aria-label="Mobile navigation">
-            <div className="flex flex-col gap-1">
-                {navLinks.map((link) => (
-                <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMobileOpen(false)}
-                    className={cn(
-                    "rounded px-3 py-2 text-sm font-semibold uppercase tracking-wider transition-colors",
-                    pathname.startsWith(link.href)
-                        ? "bg-secondary text-[hsl(0,0%,100%)]"
-                        : "text-muted-foreground hover:bg-secondary hover:text-[hsl(0,0%,95%)]"
-                    )}
-                >
-                    {link.label}
-                </Link>
-                ))}
-                <Link
-                    href="/profile"
-                    onClick={() => setMobileOpen(false)}
-                    className="rounded px-3 py-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:bg-secondary hover:text-[hsl(0,0%,95%)]"
-                    >
-                    Profile
-                </Link>
-                <Link
-                    href="/sign-in"
-                    onClick={() => setMobileOpen(false)}
-                    className="mt-2 rounded bg-primary px-3 py-2 text-center text-sm font-semibold text-primary-foreground transition-colors hover:bg-[hsl(145,100%,38%)]"
-                    >
-                    Sign In
-                </Link>
-            </div>
-            </nav>
-        )}
         </header>
     )
 }

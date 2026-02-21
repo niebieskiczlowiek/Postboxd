@@ -1,5 +1,6 @@
 import { genSaltSync, hash, compare } from "bcrypt-ts";
 import { JWTPayload, SignJWT, jwtVerify } from "jose";
+import { cookies } from "next/headers";
 
 const SALT = genSaltSync(10);
 const SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
@@ -28,5 +29,19 @@ export const verifyToken = async (token: string): Promise<JWTPayload | null> => 
         return payload;
     } catch(error) {
         return null
+    }
+}
+
+export const getSession = async () => {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("auth-token")?.value;
+
+    if (!token) return null;
+
+    try {
+        const decoded = await verifyToken(token);
+        return decoded;
+    } catch {
+        return null;
     }
 }
