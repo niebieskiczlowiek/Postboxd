@@ -8,6 +8,7 @@ import { signInSchema, signInValues } from "@/lib/validations/auth";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"; 
+import { AuthService } from "@/services/auth";
 
 interface SignInDialogProps {
     btnText?: string,
@@ -29,8 +30,15 @@ const SignInDialog = ({
 
     const { register, formState: { errors, isSubmitting }} = form;
 
-    const onSubmit = (data: signInValues) => {
-        console.log(data);
+    const onSubmit = async (data: signInValues) => {
+        const { username, password } = data;
+
+        try {
+            await AuthService.signIn(data);
+            window.location.href = "/u/me";
+        } catch (error: any) {
+            alert(error.message);
+        }
     }
 
     return (

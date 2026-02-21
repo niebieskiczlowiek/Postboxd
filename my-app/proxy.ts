@@ -13,7 +13,7 @@ export const config = {
     ]
 }
 
-export const middleware = async (request: NextRequest) => {
+export const proxy = async (request: NextRequest) => {
     const token = request.cookies.get("auth-token")?.value;
     const isApiRoute = request.nextUrl.pathname.startsWith("/api");
 

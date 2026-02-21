@@ -1,21 +1,13 @@
+import { User } from "@/types/user";
 import * as z from "zod";
 
 export const signInSchema = z.object({
     username: z
         .string()
-        .trim()
-        .regex(
-            /^[a-zA-Z0-9_]+$/, ""
-        )
-        .min(3, "Username must be at least 3 characters.")
-        .max(32, "Username must be at most 32 characters."),
+        .trim(),
     password: z
         .string()
-        .trim()
-        .regex(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/, "Password must contain a capital and digit"
-        )
-        .min(8, "Password must be at least 8 characters."),
+        .trim(),
 });
 
 export type signInValues = z.infer<typeof signInSchema>
@@ -47,3 +39,12 @@ export const signUpSchema = z.object({
 })
 
 export type signUpValues = z.infer<typeof signUpSchema>
+
+export const UserSchema = z.unknown().transform((data) => {
+    const raw = data as User;
+
+    return {
+        ...raw,
+        created_at: new Date(raw.created_at),
+    }
+})
