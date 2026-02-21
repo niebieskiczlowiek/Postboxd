@@ -6,6 +6,7 @@ import { Search, Bell, Menu, X } from "lucide-react"
 import { useState } from "react"
 import { cn } from "@/lib/utils/styles"
 import SignInDialog from "./sign-in-dialog"
+import { useAuth } from "@/providers/root-provider"
 
 const navLinks = [
     { label: "Films", href: "/films" },
@@ -16,7 +17,10 @@ const navLinks = [
 
 export const Header = () => {
     const pathname = usePathname();
-    const [mobileOpen, setMobileOpen]= useState(false);
+    const [mobileOpen, setMobileOpen]= useState<boolean>(false);
+    const { user, isLoading } = useAuth();
+
+    console.log(user);
 
     return (
         <header className="sticky top-0 z-50 border-b border-border bg-[hsl(200,20%,7%)]">
@@ -69,17 +73,19 @@ export const Header = () => {
             >
                 <Bell className="h-4 w-4" />
             </button>
-            <Link
-                href="/profile"
-                className="hidden items-center gap-2 md:flex"
-            >
-                <div className="h-7 w-7 overflow-hidden rounded-full bg-secondary">
-                <div className="flex h-full w-full items-center justify-center text-xs font-bold text-muted-foreground">
-                    U
-                </div>
-                </div>
-            </Link>
-            <SignInDialog />
+            {user ? (
+                <Link
+                    href="/profile"
+                    className="hidden items-center gap-2 md:flex"
+                >
+                    <div className="h-7 w-7 overflow-hidden rounded-full bg-secondary">
+                    <div className="flex h-full w-full items-center justify-center text-xs font-bold text-muted-foreground">
+                        U
+                    </div>
+                    </div>
+                </Link>
+            ): <SignInDialog />}
+            
 
             {/* Mobile menu button */}
             <button
