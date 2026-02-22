@@ -31,7 +31,7 @@ const SignUpForm = ({
     footer,
     callback
 }: SignUpFormProps) => {
-    const [currentStep, setCurrentStep] = useState(0);
+    const [currentStep, setCurrentStep] = useState<number>(0);
     const totalSteps = FORM_STEPS.length;
     const isLastStep = currentStep === totalSteps - 1;
 
