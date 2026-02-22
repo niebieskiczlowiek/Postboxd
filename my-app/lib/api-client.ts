@@ -21,9 +21,6 @@ export function createApiClient({ baseUrl, defaultHeaders }: ClientConfig) {
             }
         });
 
-        console.log("Response: ");
-        console.log(response);
-
         if (!response.ok) {
             throw new Error(`API Error: ${response.status} ${response.statusText}`);
         }

@@ -4,6 +4,7 @@ import { signInValues, signUpValues } from "@/lib/validations/auth";
 import { AuthService } from "@/services/auth";
 import { User } from "@/types/user";
 import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from "@tanstack/react-query";
+import { JWTPayload } from "jose";
 import { useRouter } from "next/navigation";
 import React, { createContext, useContext, useState } from "react";
 

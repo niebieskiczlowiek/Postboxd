@@ -20,4 +20,5 @@ export const AuthService = {
     },
     signOut: async () => localApi<void>(`${serverOrigin.url}/api/auth/logout`, z.any(), { method: "POST" }).catch(() => null),
     getSession: () => localApi<User>(`${serverOrigin.url}/api/users/me`, UserSchema, { method: "GET" }).catch(() => null),
+    getUser: (id: number) => localApi<User>(`${serverOrigin.url}/api/users/${id}`, UserSchema, { method: "GET" }).catch(() => null)
 }
