@@ -4,7 +4,7 @@ import { Eye, Heart, List, MessageSquare } from "lucide-react"
 import { FilmService } from "@/services/film"
 import FilmCarousel from "@/components/film-carousel"
 import ActivityItem from "@/components/activity-item"
-import SignUpDialog from "@/components/sign-up-dialog"
+import SignUpDialog from "@/components/dialogs/sign-up-dialog"
 
 
 const recentReviews = [

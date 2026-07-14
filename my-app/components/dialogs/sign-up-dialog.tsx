@@ -2,10 +2,10 @@
 
 import { signUpSchema, signUpValues } from "@/lib/validations/auth";
 import { useAuth } from "@/providers/root-provider";
-import { DialogClose,  DialogFooter } from "./ui/dialog";
-import { Button } from "./ui/button";
-import SignUpForm from "./sign-up-form";
-import AuthFormDialogWrapper from "./auth-dialog-wrapper";
+import { DialogClose,  DialogFooter } from "../ui/dialog";
+import { Button } from "../ui/button";
+import SignUpForm from "../forms/sign-up-form";
+import AuthFormDialogWrapper from "../auth-dialog-wrapper";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"; 

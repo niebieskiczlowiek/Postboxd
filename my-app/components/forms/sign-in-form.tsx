@@ -3,9 +3,9 @@ import { useAuth } from "@/providers/root-provider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Field, FieldGroup, FieldSet } from "./ui/field";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
+import { Field, FieldGroup, FieldSet } from "../ui/field";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 interface SignInFormProps {
     footer: (props: { isSubmitting: boolean }) => React.ReactNode,
