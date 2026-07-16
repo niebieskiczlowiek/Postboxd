@@ -4,6 +4,7 @@ import { useState } from "react"
 
 interface StarRatingInputProps {
   maxStars?: number,
+  id?: string
   callback: (rating: number) => void,
   size?: "sm" | "md" | "lg"
 }

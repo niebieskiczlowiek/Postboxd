@@ -1,8 +1,7 @@
 "use client"
 
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
 import { Form } from "../ui/form";
 import { Button } from "../ui/button";
 
@@ -24,7 +23,7 @@ const ReviewForm = ({}: ReviewFormProps) => {
         mode: "onSubmit"
     });
 
-    const { register, handleSubmit, formState: { errors } } = form
+    const { register, handleSubmit, control, formState: { errors } } = form
 
     return (
         <Form {...form}>
@@ -45,11 +44,18 @@ const ReviewForm = ({}: ReviewFormProps) => {
 
                     {/* Rating */}
                     <Field>
-                        <StarRatingInput 
-                            // {...register("rating")}
-                            callback={(data) => {
-                                console.log(data)
-                            }}
+                        <Controller 
+                            name="rating"
+                            control={control}
+                            defaultValue={0}
+                            render={({ field: { onChange, value }, fieldState: { error } }) => (
+                                <StarRatingInput
+                                    id="rating"
+                                    callback={(newRating) => {
+                                        onChange(newRating)
+                                    }}
+                                />
+                            )}
                         />
                     </Field>
 
