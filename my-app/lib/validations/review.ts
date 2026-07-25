@@ -3,7 +3,7 @@ import * as z from "zod";
 
 // TMDB schemas
 
-export const TMDBReviewSchemaTransform = z.unknown().transform((data) => {
+export const TMDBReviewSchemaParse = z.unknown().transform((data) => {
     const raw = data as TMDBReview;
 
     const scaledRating = raw.author_details.rating
@@ -21,35 +21,39 @@ export const TMDBReviewSchemaTransform = z.unknown().transform((data) => {
     } as TMDBReview;
 });
 
-export type TMDBReviewValues = z.infer<typeof TMDBReviewSchemaTransform>;
+export type TMDBReviewValues = z.infer<typeof TMDBReviewSchemaParse>;
 
-export const TMDBReviewSetSchema = z.unknown().transform((data) => {
+export const TMDBReviewSetSchemaParse = z.unknown().transform((data) => {
     const raw = data as TMDBReviewSet;
 
     return {
         ...raw,
-        results: z.array(TMDBReviewSchemaTransform).parse(raw.results)
+        results: z.array(TMDBReviewSchemaParse).parse(raw.results)
     } as TMDBReviewSet;
 });
 
 // local API schemas
 
-export const PostReviewSchema = z.object({
-    // user_id: z.number(),
-    film_id: z.number(),
+// Schema for Review Form
+export const ReviewFormSchema = z.object({
     content: z.string().trim().optional(),
     rating: z.number().refine((value) => value >= 0 && value <= 5),
-    // created_at: z.date()
-})
+});
 
-export const ReviewSchema = z.unknown().transform((data) => {
+export type ReviewFormValues = z.infer<typeof ReviewFormSchema>;
+
+
+export const ReviewSchema = ReviewFormSchema.extend({
+    film_id: z.number(),
+});
+
+export type ReviewValues = z.infer<typeof ReviewSchema>;
+
+export const ReviewSchemaParse = z.unknown().transform((data) => {
     const raw = data as Review
 
     return {
         ...raw,
-        // user_id: 1,
         created_at: new Date(raw.created_at)
     }
 });
-
-export type postReviewValues = z.infer<typeof PostReviewSchema>;

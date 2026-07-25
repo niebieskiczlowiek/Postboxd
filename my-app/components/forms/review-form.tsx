@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Form } from "../ui/form";
 import { Button } from "../ui/button";
 
-import { PostReviewSchema, postReviewValues } from "@/lib/validations/review";
+import { ReviewFormSchema, ReviewFormValues, ReviewValues } from "@/lib/validations/review";
 import { Textarea } from "../ui/textarea";
 import { StarRatingInput } from "../star-rating-input";
 import { Field, FieldSet } from "../ui/field";
@@ -18,10 +18,9 @@ interface ReviewFormProps {
 const ReviewForm = ({
     filmId,
 }: ReviewFormProps) => {
-    const form = useForm<postReviewValues>({
-        resolver: zodResolver(PostReviewSchema),
+    const form = useForm<ReviewFormValues>({
+        resolver: zodResolver(ReviewFormSchema),
         defaultValues: {
-            film_id: filmId,
             content: "",
             rating: 0
         },
@@ -30,12 +29,22 @@ const ReviewForm = ({
 
     const { register, handleSubmit, control, formState: { errors } } = form
 
+    const onSubmit = async (formData: ReviewFormValues) => {
+        try {
+            await ReviewService.postReview({
+                ...formData,
+                film_id: filmId
+            });
+
+            form.reset();
+        } catch (error) {
+            console.error("Failed to post review: ", error)
+        }
+    }
+
     return (
         <Form {...form}>
-            <form onSubmit={handleSubmit((data) => {
-                console.log(data);
-                ReviewService.postReview(data)
-            })}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <FieldSet>
                     {/* Content */}
                     <Field>
