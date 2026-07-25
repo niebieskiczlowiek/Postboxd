@@ -1,8 +1,10 @@
-import { Review, ReviewSet } from "@/types/review";
+import { Review, TMDBReview, TMDBReviewSet } from "@/types/review";
 import * as z from "zod";
 
-export const reviewSchema = z.unknown().transform((data) => {
-    const raw = data as Review;
+// TMDB schemas
+
+export const TMDBReviewSchemaTransform = z.unknown().transform((data) => {
+    const raw = data as TMDBReview;
 
     const scaledRating = raw.author_details.rating
         ? Number((Number(raw.author_details.rating))/2).toFixed(1)
@@ -16,24 +18,38 @@ export const reviewSchema = z.unknown().transform((data) => {
         },
         created_at: new Date(raw.created_at),
         updated_at: new Date(raw.updated_at)
-    } as Review;
+    } as TMDBReview;
 });
 
-export type reviewValues = z.infer<typeof reviewSchema>;
+export type TMDBReviewValues = z.infer<typeof TMDBReviewSchemaTransform>;
 
-export const reviewFilmSchema = z.object({
-    created_at: z.date(),
-    content: z.string().trim().optional(),
-    rating: z.number().refine((value) => value >= 0 && value <= 5)
-})
-
-export type reviewFilmValues = z.infer<typeof reviewFilmSchema>;
-
-export const reviewSetSchema = z.unknown().transform((data) => {
-    const raw = data as ReviewSet;
+export const TMDBReviewSetSchema = z.unknown().transform((data) => {
+    const raw = data as TMDBReviewSet;
 
     return {
         ...raw,
-        results: z.array(reviewSchema).parse(raw.results)
-    } as ReviewSet;
+        results: z.array(TMDBReviewSchemaTransform).parse(raw.results)
+    } as TMDBReviewSet;
 });
+
+// local API schemas
+
+export const PostReviewSchema = z.object({
+    // user_id: z.number(),
+    film_id: z.number(),
+    content: z.string().trim().optional(),
+    rating: z.number().refine((value) => value >= 0 && value <= 5),
+    // created_at: z.date()
+})
+
+export const ReviewSchema = z.unknown().transform((data) => {
+    const raw = data as Review
+
+    return {
+        ...raw,
+        // user_id: 1,
+        created_at: new Date(raw.created_at)
+    }
+});
+
+export type postReviewValues = z.infer<typeof PostReviewSchema>;

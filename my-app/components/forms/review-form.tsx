@@ -5,18 +5,23 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Form } from "../ui/form";
 import { Button } from "../ui/button";
 
-import { reviewFilmSchema, reviewFilmValues } from "@/lib/validations/review";
+import { PostReviewSchema, postReviewValues } from "@/lib/validations/review";
 import { Textarea } from "../ui/textarea";
 import { StarRatingInput } from "../star-rating-input";
 import { Field, FieldSet } from "../ui/field";
+import { ReviewService } from "@/services/review";
 
-interface ReviewFormProps {};
+interface ReviewFormProps {
+    filmId: number,
+};
 
-const ReviewForm = ({}: ReviewFormProps) => {
-    const form = useForm<reviewFilmValues>({
-        resolver: zodResolver(reviewFilmSchema),
+const ReviewForm = ({
+    filmId,
+}: ReviewFormProps) => {
+    const form = useForm<postReviewValues>({
+        resolver: zodResolver(PostReviewSchema),
         defaultValues: {
-            created_at: new Date(),
+            film_id: filmId,
             content: "",
             rating: 0
         },
@@ -29,6 +34,7 @@ const ReviewForm = ({}: ReviewFormProps) => {
         <Form {...form}>
             <form onSubmit={handleSubmit((data) => {
                 console.log(data);
+                ReviewService.postReview(data)
             })}>
                 <FieldSet>
                     {/* Content */}

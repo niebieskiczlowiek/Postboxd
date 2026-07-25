@@ -16,4 +16,17 @@ model User {
   password    String
   email       String    @unique
   created_at  DateTime  @default(now())
+  reviews     Review[]
+}
+
+model Review {
+  id          Int       @id @default(autoincrement())
+  user_id     Int
+  user        User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  film_id     Int
+  content     String
+  rating      Float
+  created_at  DateTime  @default(now())
+
+  @@index([user_id])
 }

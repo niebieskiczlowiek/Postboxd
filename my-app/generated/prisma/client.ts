@@ -44,3 +44,8 @@ export { Prisma }
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model Review
+ * 
+ */
+export type Review = Prisma.ReviewModel
