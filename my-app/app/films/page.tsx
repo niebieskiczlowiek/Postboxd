@@ -10,8 +10,6 @@ export default async function FilmsPage() {
   })
 
   const movies = await res.json();
-
-  console.log(movies);
   
   return (
     <>Films</>

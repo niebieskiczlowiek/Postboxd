@@ -45,6 +45,7 @@ export type ReviewFormValues = z.infer<typeof ReviewFormSchema>;
 
 export const ReviewSchema = ReviewFormSchema.extend({
     film_id: z.number(),
+    user_id: z.number(),
 });
 
 export type ReviewValues = z.infer<typeof ReviewSchema>;

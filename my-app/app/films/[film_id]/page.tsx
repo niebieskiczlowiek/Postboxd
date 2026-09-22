@@ -36,8 +36,6 @@ const FilmPage = async ({
     notFound();
   }
 
-  console.log(filmReviews)  
-
   return (
     <div>
       {/* Film backdrop */}

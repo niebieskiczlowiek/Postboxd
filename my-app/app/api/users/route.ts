@@ -15,10 +15,6 @@ export async function POST(request: Request) {
             email
         } = body;
 
-        console.log("REGISTERING")
-        console.log(email);
-        console.log(body);
-
         const pwdHash = await hashPassword(password);
 
         const newUser = await prisma.user.create({

@@ -10,13 +10,16 @@ import { Textarea } from "../ui/textarea";
 import { StarRatingInput } from "../star-rating-input";
 import { Field, FieldSet } from "../ui/field";
 import { ReviewService } from "@/services/review";
-
 interface ReviewFormProps {
     filmId: number,
+    userId: number,
+    callback: () => void
 };
 
 const ReviewForm = ({
     filmId,
+    userId,
+    callback
 }: ReviewFormProps) => {
     const form = useForm<ReviewFormValues>({
         resolver: zodResolver(ReviewFormSchema),
@@ -33,10 +36,12 @@ const ReviewForm = ({
         try {
             await ReviewService.postReview({
                 ...formData,
-                film_id: filmId
+                film_id: filmId,
+                user_id: userId
             });
 
             form.reset();
+            callback();
         } catch (error) {
             console.error("Failed to post review: ", error)
         }

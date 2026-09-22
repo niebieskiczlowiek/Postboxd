@@ -46,8 +46,6 @@ const HomePage = async () => {
         FilmService.getPopular()
     ])
 
-    console.log(popularFilms)
-
     return (
       <div>
         <section className="relative overflow-hidden border-b border-border bg-[hsl(200,18%,8%)]">

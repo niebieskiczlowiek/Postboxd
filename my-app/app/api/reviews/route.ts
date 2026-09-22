@@ -8,17 +8,17 @@ export async function POST(request: Request) {
 
         const {
             film_id,
+            user_id,
             content,
             rating
         } = body;
 
         const newReview = await prisma.review.create({
             data: {
-                user_id: 1,
+                user_id: user_id,
                 film_id: film_id,
                 content: content,
                 rating: rating
-                
             }
         });
 
