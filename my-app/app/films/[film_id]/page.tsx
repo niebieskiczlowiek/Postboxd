@@ -10,7 +10,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Heart, Eye, Clock, List, Share2 } from "lucide-react";
-import LogDialog from "@/components/dialogs/review-dialog";
+import LogDialog from "@/components/dialogs/log-dialog";
 
 const ratings: Rating[] = [
   { rating: 0, count: 23 },

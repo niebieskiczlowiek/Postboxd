@@ -1,25 +1,31 @@
 "use client"
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form } from "../ui/form";
 import { Button } from "../ui/button";
 
-import { ReviewFormSchema, ReviewFormValues, ReviewValues } from "@/lib/validations/review";
+import { ReviewFormSchema, ReviewFormValues } from "@/lib/validations/review";
 import { Textarea } from "../ui/textarea";
 import { StarRatingInput } from "../star-rating-input";
 import { Field, FieldSet } from "../ui/field";
 import { ReviewService } from "@/services/review";
+import { useEffect, useRef } from "react";
+
 interface ReviewFormProps {
     filmId: number,
     userId: number,
-    callback: () => void
+    onSubmit: () => void,
+    onChange?: () => void,
+    onDirtyChange?: (isDirty: boolean) => void,
 };
 
 const ReviewForm = ({
     filmId,
     userId,
-    callback
+    onSubmit,
+    onChange,
+    onDirtyChange,
 }: ReviewFormProps) => {
     const form = useForm<ReviewFormValues>({
         resolver: zodResolver(ReviewFormSchema),
@@ -30,26 +36,61 @@ const ReviewForm = ({
         mode: "onSubmit"
     });
 
-    const { register, handleSubmit, control, formState: { errors } } = form
+    const { 
+        register,
+        handleSubmit: processSubmit, 
+        control, 
+        formState: { errors, isDirty }
+    } = form;
 
-    const onSubmit = async (formData: ReviewFormValues) => {
+    const formValues = useWatch({ control });
+    const formDefaultValues = form.formState.defaultValues;
+    const prevUnsavedChangesRef = useRef<boolean | null>(null);
+    
+    const handleSubmit = async (formData: ReviewFormValues) => {
         try {
             await ReviewService.postReview({
                 ...formData,
                 film_id: filmId,
                 user_id: userId
             });
-
+            
             form.reset();
-            callback();
+            onSubmit();
         } catch (error) {
             console.error("Failed to post review: ", error)
         }
     }
+    
+    useEffect(() => {
+        /* 
+            Empty form values can initialize as undefined or null, 
+            therefore we use the `??` operator to check whether or not
+            they are intialised, and if they're not, we convert them to the default value.
+        */
+        const isContentDefault = (formValues.content ?? "") === (formDefaultValues?.content ?? "");
+        const isRatingDefault = (formValues.rating ?? 0) === (formDefaultValues?.rating ?? 0);
+        const valuesMatchDefault = isContentDefault && isRatingDefault;
+        const hasUnsavedChanges = isDirty && !valuesMatchDefault;
+
+        /*
+            We use prevUnsavedChangesRef to check whether or not there has been
+            an actual change to the state of hasUnsavedChanges. If the state remains
+            the same as before, we don't execute the callback.
+        */
+        if (onDirtyChange && prevUnsavedChangesRef.current !== hasUnsavedChanges) {
+            prevUnsavedChangesRef.current = hasUnsavedChanges;
+            onDirtyChange(hasUnsavedChanges);
+        }
+    }, [formValues, formDefaultValues, isDirty, onDirtyChange]);
+
+    useEffect(() => {
+        if (onChange) onChange();
+    }, [formValues, onChange]);
 
     return (
         <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={processSubmit(handleSubmit)}>
                 <FieldSet>
                     {/* Content */}
                     <Field>

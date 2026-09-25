@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import ReviewForm from "../forms/review-form";
 import { useAuth } from "@/providers/root-provider";
+import ControlledDialog from "./controlled-dialog";
 
 interface LogDialogProps {
     film: Film,
@@ -18,18 +19,43 @@ const LogDialog = ({
     btnText,
     btnClassName
  }: LogDialogProps) => {
-    const [open, setOpen] = useState<boolean>(false);
     const { user } = useAuth();
 
+    const [open, setOpen] = useState<boolean>(false);
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
+    const [openControlledDialog, setOpenControlledDialog] = useState<boolean>(false);
+
+    const handleOnOpenChange = (open: boolean) => {
+        if (!open && hasUnsavedChanges) {
+            setOpenControlledDialog(true);
+        } else {
+            setOpen(open);
+        }
+    }
+
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={handleOnOpenChange}>
+            {/* Controlled confirm prompt dialog */}
+            <ControlledDialog
+                titleText="Unsaved changes"
+                descriptionText="Are you sure you want to discard your review?"
+                cancelBtnText="Cancel"
+                confirmBtnText="Discard"
+                cancelBtnCallback={() => {
+                    setOpenControlledDialog(false)
+                }}
+                confirmBtnCallback={() => {
+                    setOpenControlledDialog(false)
+                    setOpen(false)
+                }}
+                open={openControlledDialog}
+            />
+
             {/* Trigger */}
             <DialogTrigger className={btnClassName ? btnClassName : ""} asChild>
-                <Button 
-                    variant="outline"
-                >
-                        {btnText ? btnText : film.title}
-                    </Button>
+                <Button variant="outline">
+                    {btnText ? btnText : film.title}
+                </Button>
             </DialogTrigger>
 
             {/* Content */}
@@ -45,9 +71,10 @@ const LogDialog = ({
                     <ReviewForm 
                         filmId={film.id}
                         userId={user.id}
-                        callback={() => {
+                        onSubmit={() => {
                             setOpen(false)
                         }}
+                        onDirtyChange={setHasUnsavedChanges}
                     />
                 </DialogContent>
             ) : 
