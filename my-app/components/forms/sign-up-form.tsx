@@ -2,9 +2,9 @@
 
 import { signUpSchema, signUpValues } from "@/lib/validations/auth";
 import { useAuth } from "@/providers/root-provider";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
-import { Field, FieldGroup, FieldSet } from "./ui/field";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { Field, FieldGroup, FieldSet } from "../ui/field";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";

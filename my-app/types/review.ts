@@ -1,6 +1,6 @@
 import { DataSet } from "./dataSet"
 
-export interface Review {
+export interface TMDBReview {
     id: string,
     author: string,
     author_details: {
@@ -19,11 +19,20 @@ export interface Review {
     url: string
 }
 
-export type ReviewSet = DataSet & { 
-    results: Array<Omit<Review, "iso_639_1" | "media_id" | "media_title" | "media_type">>,
+export type TMDBReviewSet = DataSet & { 
+    results: Array<Omit<TMDBReview, "iso_639_1" | "media_id" | "media_title" | "media_type">>,
 }
 
 export type Rating = {
     rating: number,
     count: number
+}
+
+export interface Review {
+    id: number
+    user_id: number
+    film_id: number,
+    content: string,
+    rating: number,
+    created_at: Date
 }

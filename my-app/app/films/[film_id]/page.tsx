@@ -10,6 +10,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Heart, Eye, Clock, List, Share2 } from "lucide-react";
+import LogDialog from "@/components/dialogs/log-dialog";
 
 const ratings: Rating[] = [
   { rating: 0, count: 23 },
@@ -34,8 +35,6 @@ const FilmPage = async ({
   if (!filmDetails || !similiarFilms || !filmReviews) {
     notFound();
   }
-
-  console.log(filmReviews)  
 
   return (
     <div>
@@ -110,13 +109,11 @@ const FilmPage = async ({
             {/* Actions */}
             <div className="flex flex-wrap items-center gap-2">
               <ToolTipBtn content="Log or Review">
-                <button
-                  type="button"
-                  className="group flex items-center gap-1.5 rounded bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition-colors hover:bg-[hsl(145,100%,38%)]"
-                >
-                  <Eye className="h-4 w-4" />
-                  <span>Log or Review</span>
-                </button>
+                <LogDialog 
+                  film={filmDetails}
+                  btnClassName="group flex items-center gap-1.5 rounded bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition-colors hover:bg-[hsl(145,100%,38%)]"
+                  btnText="Log or Review"
+                />
               </ToolTipBtn>
               <ToolTipBtn content="Like">
                   <button

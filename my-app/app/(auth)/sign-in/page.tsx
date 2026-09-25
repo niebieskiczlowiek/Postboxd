@@ -1,6 +1,6 @@
 "use client";
 
-import SignInForm from "@/components/sign-in-form";
+import SignInForm from "@/components/forms/sign-in-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 

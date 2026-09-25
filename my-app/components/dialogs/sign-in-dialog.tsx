@@ -1,7 +1,7 @@
-import { DialogClose, DialogFooter } from "./ui/dialog";
-import { Button } from "./ui/button";
-import AuthFormDialogWrapper from "./auth-dialog-wrapper";
-import SignInForm from "./sign-in-form";
+import { DialogClose, DialogFooter } from "../ui/dialog";
+import { Button } from "../ui/button";
+import AuthFormDialogWrapper from "../auth-dialog-wrapper";
+import SignInForm from "../forms/sign-in-form";
 
 interface SignInDialogProps {
     btnText?: string,
