@@ -27,3 +27,14 @@
 - **Server Actions:** Used for mutation/writes (`src/app/actions/course-actions.ts`).
   - *Rule:* Always call `revalidatePath('/dashboard')` inside actions after database updates.
 - **Client Components (`"use client"`):** Restricted strictly to interactive forms, drag-and-drop video uploaders, and video player UI.
+
+---
+
+### 📚 Documentation Index
+
+For detailed guides and architecture deep dives, refer to the following:
+
+- [System Architecture & Data Flow](./docs/architecture.md)
+- [Database Setup & Schema Guide](./docs/database-schema.md)
+- [Authentication & Middleware Rules](./docs/authentication.md)
+- [Troubleshooting & Known Gotchas](./docs/troubleshooting.md)
