@@ -67,19 +67,64 @@ Postboxd uses its a custom, stateless authentication system built on JSON Web To
 Postboxd uses Supabase as it's personal database and Prisma 7 for it's ORM. This allows for quick and simple database interactions, without any need for writing traditional SQL queries.
 
 ### ORM Setup 🌈
-`/.env` &mdash; stores `DATABASE_URL` and `DIRECT_URL` for database connections.
+- `/.env.local` &mdash; stores `DATABASE_URL` and `DIRECT_URL` for database connections.
 
-`/prisma/schema.prisma` &mdash; defines database schemas and tables.
+- `/prisma/schema.prisma` &mdash; defines database schemas, enums and tables.
 
-`/lib/prisma.ts` &mdash; sets up and configures the singleton Prisma instance. Import `prisma` to interact with the database.
+- `/lib/prisma.ts` &mdash; sets up and configures the singleton Prisma instance. Import `prisma` to interact with the database.
 
-### Useful Commands
+- `/prisma.config.ts` &mdash; configures the data source connection (PostgreSQL), typescript client generation, and database entity schemas.
+
+### Useful Commands & Cheatsheets
+#### 1. Adding or updating a database schema:
+1. `npx prisma db push` — pushes schema into the database
+
+2. `npx prisma generate` — generates a new Prisma client
 
 ## 6. Key Abstractions & Patterns / Helper Utilities ⭐️
 
 ### Form Handling 📝
+Postboxd uses **React Hook** Form and **Zod** to standardize form handling accross the application.
+
+#### Overview
+- `/components/forms` &mdash; all custom form components are to be stored at this directory
+- `/lib/validations/` &mdash; here Zod schemas, types and parsers are defined and grouped by purpose into files (e.g.: auth, film, review)
+
+#### Templates
+When creating a new form, this general template for setting up a Zod schema and type, as well as a React Form Hook, should be followed:
+```ts
+export const formSchema = z.object({
+	value1: z.string(),
+	value2: z.string(),
+});
+
+export type formValues = z.infer<typeof formSchema>
+```
+
+```tsx
+const Form = ({}: FormProps) => {
+	const form = useForm<formValues>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			value1: "",
+			value2: "",
+		},
+		mode: "onSubmit"
+	});
+	
+	const { register, handleSubmit, formState: { errors, isSubmitting }} = form;
+	
+	return (
+		<form onSubmit={handleSubmit(() => {...})}>
+			<Input {...register("value1")}>
+			<Input {...register("value2")}>
+		</form>
+	);
+}
+```
 
 ### Error Handling ❌
+--To Be Implemented--
 
 ### API Clients 🧑‍💼
 Since Postboxd uses both a local and an external API, in order to cleanly configure API clients use the createApiClient function at /lib/api-client.ts . It returns an apiClient function based on provided configuration parameters, which can then be used to make API calls. We use it to create a standardised pattern of handling API calls throughout the entire application, without repeating code. API client are to be initialised in /services/client.ts . Each API client can be configured with it’s own default url, headers, and other necessary 
