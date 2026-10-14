@@ -1,32 +1,69 @@
 # Postboxd
 > Postboxd is a clone of the Letterboxd website. It allows users to browse an extensive online film database, rate and review films, read other users’ reviews, as well as add films to personal lists.
 
-
-## Tech Stack & Enviroment
+## Tech Stack & Environment
 - **Framework:** Next.js 16.1.6 (App Router)
 - **Database / ORM:** Supabase + Prisma (`prisma/schema.prisma`)
-- **Auth:** . . .
+- **Auth:** Custom, stateless, JWT-based, HTTP-only authentication
 - **Styling / UI:** Tailwind CSS + shadcn/ui components
+- **Primary data source**: TMDB API [https://developer.themoviedb.org/docs/getting-started] (External REST API for film data)
+- **Design Generation:** [v0.dev](https://v0.dev) — Used for initial UI layout prototyping and component scaffold generation (Tailwind CSS + shadcn/ui primitives).
 
-### Local Setup Steps -- TO DO (example)
-1. Install dependencies: `pnpm install`
-2. Environment config: `cp .env.example .env.local`
-3. Spin up local DB & Seed: `npx prisma db push && npx prisma db seed`
-4. Run Stripe Webhook Listener (Terminal 2): `stripe listen --forward-to localhost:3000/api/webhooks/stripe`
-5. Start dev server: `pnpm dev`
+## Key Features ✨
+- **Film browsing and discovery:** Search and browse films provided by the TMDB API
+- **Share and read reviews:** See what other people think about films and share your own thoughts
+- **Personal lists:** Add films to personal film lists
+- **Custom Auth:** Secure, stateless JWT authentication stored in HTTP-only cookies
 
-## Architecture & Data Flow -- TODO (example)
-### 1. Authentication & Route Guarding
-- **Middleware:** `src/middleware.ts` intercepting all requests.
-- **Protected Routes:** `/dashboard/*`, `/course/[id]/edit` require active session.
-- **Public Routes:** `/`, `/courses`, `/api/webhooks/*`
+## Getting Started 🛠️
 
-### 2. Data Fetching Strategy
-- **Server Components (RSC):** Default for reading database records directly via Prisma.
-  - *Example:* `/dashboard/page.tsx` fetches user courses directly on the server without API routes.
-- **Server Actions:** Used for mutation/writes (`src/app/actions/course-actions.ts`).
-  - *Rule:* Always call `revalidatePath('/dashboard')` inside actions after database updates.
-- **Client Components (`"use client"`):** Restricted strictly to interactive forms, drag-and-drop video uploaders, and video player UI.
+### Prerequisites 📋
+* Node.js (v18.x or higher recommended)
+* npm, pnpm or yarn
+
+### Installation 💿
+1. Clone the repository
+  ```bash
+  git clone https://github.com/niebieskiczlowiek/Postboxd.git
+  cd Postboxd
+  ```
+
+2. Install dependencies
+  ```bash
+  npm install
+  # or
+  pnpm install
+  ```
+
+3. Environment config
+  ```bash 
+  cp .env.example .env.local
+  ```
+
+4. Setup Prisma
+  ```bash
+  npx prisma db push && npx prisma generate
+  ```
+
+5. Run development server
+  ```bash
+  npm run dev
+  # or
+  pnpm dev
+  ```
+
+## Project Structure
+```
+├── app/                  # Next.js App Router (pages, layouts, API routes)
+├── components/           # Reusable UI components
+├── lib/                  # Utility functions and shared clients (e.g., prisma.ts)
+├── providers/            # React providers
+├── public/               # Static assets (images, icons)
+├── services/             # Service layer function
+├── types/                # Typescript types
+├── .env.example          # Example environment variables
+└── package.json          # Project dependencies and scripts
+```
 
 ---
 
