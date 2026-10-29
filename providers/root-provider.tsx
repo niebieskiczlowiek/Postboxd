@@ -23,6 +23,9 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
+/* 
+Instead of calling useContext() each time, we wrap it in an additional function
+*/
 export function useAuth(): AuthContextValue {
     const context = useContext(AuthContext);
     if (!context) {
@@ -31,7 +34,21 @@ export function useAuth(): AuthContextValue {
     return context;
 }
 
+/* 
+AuthProvider defines the value of AuthContext.
+We use it to define the entire AuthContext value in a single place,
+and put it all in a single, ready-to-use AuthProvider wrapper.
+
+AuthContext and AuthProvider should probably be moved to a separate auth-provider module.
+*/
 const AuthProvider = ({ children, initialUser }: RootProviderProps) => {
+    /* 
+    Use useQuery() to call getSession() and cache the results. 
+    No need to call it again later, just grab the cached results.
+
+    We cache getSession() results, but it also gets saved to our context.
+    Are both of these necessary? The app only ever retrieves user from context. 
+    */
     const { data: user, isLoading } = useQuery({
         queryKey: ['auth-user'],
         queryFn: AuthService.getSession,
@@ -86,11 +103,15 @@ const AuthProvider = ({ children, initialUser }: RootProviderProps) => {
     )
 }
 
+/* 
+Use RootProvider as base for all other providers.
+It helps organize, and see clearly all providers the app uses.
+*/
 export function RootProvider({ 
     children,
     initialUser, 
 }: RootProviderProps) {
-    const [queryClient] = useState(() => new QueryClient());
+    const [queryClient] = useState(() => new QueryClient()); // why useState?
 
     return (
         <QueryClientProvider client={queryClient}>

@@ -3,6 +3,9 @@ import { verifyToken } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 
+/* 
+add paths, which need to be affected by proxy, to config.matcher
+*/ 
 export const config = {
     matcher: [
         '/api/users/me',
@@ -13,6 +16,10 @@ export const config = {
     ]
 }
 
+/* 
+proxy adds a layer of protection between the client and API.
+Add path security (such as token validation) here
+*/
 export const proxy = async (request: NextRequest) => {
     const token = request.cookies.get("auth-token")?.value;
     const { pathname } = request.nextUrl;
