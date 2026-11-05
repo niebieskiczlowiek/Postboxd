@@ -5,6 +5,19 @@ type ClientConfig = {
     defaultHeaders?: Record<string, string>;
 }
 
+/*
+Use createApiClient() when you want to define a new API client.
+createApiClient() helps standardize how API calls are handled across the entire app.
+
+@param baseUrl — base url for the api client
+@param defaultHeaders — a set of default headers for the api client
+
+@returns 
+An asynchronous apiClient function, 
+which can make API requests, 
+and handle responses based on the provided url, 
+schema and other parameters.
+*/
 export function createApiClient({ baseUrl, defaultHeaders }: ClientConfig) {
     const apiClient = async <T>(
         endpoint: string,

@@ -1,0 +1,165 @@
+# 🏗️ Architecture
+This document outlines the high-level architecture, abstraction choices and data flow patterns used across the Postboxd project. Refer to this when adding new features or refactoring existing modules.
+
+## 1. Overview & Tech Stack 🚀
+- **Framework:** Next.js 16.1.6 (App Router)
+- **Database / ORM:** Supabase + Prisma (`prisma/schema.prisma`)
+- **Auth:** Custom, stateless, JWT-based, HTTP-only authentication
+- **Styling / UI:** Tailwind CSS + shadcn/ui components
+- **Primary data source**: TMDB API [https://developer.themoviedb.org/docs/getting-started] (External REST API for film data)
+- **Design Generation:** [v0.dev](https://v0.dev) — Used for initial UI layout prototyping and component scaffold generation (Tailwind CSS + shadcn/ui primitives).
+
+## 2. Directory & Module Responsibilities 🛠️
+- `/app` &mdash; Routing, layouts and page entry points
+- `/app/api` &mdash; Local API and backend logic
+- `/components` &mdash; custom ui components (may include bundle directories of similiar components like `/components/forms` or `/components/dialogs`)
+- `/components/ui/` &mdash; shadcn ui components
+- `/lib` &mdash; utilities, Third-party client integration, validations, etc.
+- `/services/` &mdash; API fetching wrappers
+- `/types` &mdash; Typescript type declarations
+
+## 3. Data Flow & Request Lifecycle 🔄
+### A. Local API flow 🏠
+1. **Client or Server Component** &mdash; user interacts with a component (e.g., submitting a form), but a page can also begin the process automatically.
+2. **Service function** &mdash; a specialised service function is fired (`/services`), and any necessary data is passed and parsed.
+3. **Local API** &mdash; an HTTP request is made to a local API endpoint using an API client (`services/client.ts`). 
+	- Data is validated
+	- Cookies are managed
+	- Tokens are authenticated
+	- Responses are sent
+4. **Database** &mdash; (via a Prisma ORM query) data is written to or read from the database, and the response is passed back through the API route and service layer to trigger UI responses.
+
+### B. External API flow (TMDB API) 🏢
+1. **Client or Server Component** &mdash; user interacts with a component (e.g., submitting a form), but a page can also begin the process automatically.
+2. **Service function** &mdash; a specialised service function is fired (`/services`), and any necessary data is passed and parsed.
+3. **External API** &mdash; an HTTP request is made to an external API endpoint using an API client (`services/client.ts`). The returned JSON data is passed back through the API route and service layer to trigger UI responses.
+
+## 4. Authentication & Authorization ✅
+### Overview & Provider 🔍
+Postboxd uses its a custom, stateless authentication system built on JSON Web Tokens (JWT) and HTTP-only cookies.
+
+- **Auth Strategy:** Stateless JWT stored in a secure, HTTP-only cookie
+- **Cookie Security Configuration:**
+	- `httpOnly: true` (prevents client-side JavaScript access / XSS)
+	- `secure: true` in production (enforces HTTPS)
+	- `sameSite: "strict"` (mitigates CSRF attacks)
+	- `maxAge: 7200` (2-hour session lifespan)
+- **Supported Login Methods:** Email/Password
+- **Secrets & keys:** JWT signing secrets and encryption keys stored in environmental variables (`process.env.JWT_SECRET`)
+
+### Session Flow & Token Handling 🌊
+1. **Sign In:** The user submits credentials to the Auth Provider via `/providers/root-provider.tsx`. The task is then delegated to the service function at `/services/auth.ts`, which dispatches an HTTP request to the API.
+2. **API:** The API verifies the passed credentials, authenticates them and compares them to existing database records. 
+3. **Session Storage:** Upon successful authentication, a JWT token containing the user's ID and email is created. The token is stored as a cookie in the session under the name of "auth-token".
+4. **Request Attaching:** Subsequent requests automatically pass these cookies to Next.js API routes and Server Components.
+
+### Protecting Routes & Resources 🛡️
+1. **Server Components and Server Actions**
+	- **Purpose:** Verifying identity before executing server-side logic.
+	- **Behavior:** Retrieves user session using `await getSession()`. If invalid or unauthenticated, throws an authorization error or triggers a redirect.
+
+2. **Edge Route Protection (`proxy.ts`)**
+	- **Purpose:** Verifying identity before accessing routes
+	- **Behaviour:** Extracts the `auth-token` cookie from incoming requests, validates it via `verifyToken()`, and either returns a `401 Unauthorized` exception (for APIs) or redirects the user to a different path. 
+
+## 5. Database & ORM 💾
+### Overview 🔎
+Postboxd uses Supabase as it's personal database and Prisma 7 for it's ORM. This allows for quick and simple database interactions, without any need for writing traditional SQL queries.
+
+### ORM Setup 🌈
+- `/.env.local` &mdash; stores `DATABASE_URL` and `DIRECT_URL` for database connections.
+
+- `/prisma/schema.prisma` &mdash; defines database schemas, enums and tables.
+
+- `/lib/prisma.ts` &mdash; sets up and configures the singleton Prisma instance. Import `prisma` to interact with the database.
+
+- `/prisma.config.ts` &mdash; configures the data source connection (PostgreSQL), typescript client generation, and database entity schemas.
+
+### Useful Commands & Cheatsheets
+#### 1. Adding or updating a database schema:
+1. `npx prisma db push` — pushes schema into the database
+
+2. `npx prisma generate` — generates a new Prisma client
+
+## 6. Key Abstractions & Patterns / Helper Utilities ⭐️
+
+### Form Handling 📝
+Postboxd uses **React Hook** Form and **Zod** to standardize form handling accross the application.
+
+#### Overview
+- `/components/forms` &mdash; all custom form components are to be stored at this directory
+- `/lib/validations/` &mdash; here Zod schemas, types and parsers are defined and grouped by purpose into files (e.g.: auth, film, review)
+
+#### Templates
+When creating a new form, this general template for setting up a Zod schema and type, as well as a React Form Hook, should be followed:
+```ts
+export const formSchema = z.object({
+	value1: z.string(),
+	value2: z.string(),
+});
+
+export type formValues = z.infer<typeof formSchema>
+```
+
+```tsx
+const Form = ({}: FormProps) => {
+	const form = useForm<formValues>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			value1: "",
+			value2: "",
+		},
+		mode: "onSubmit"
+	});
+	
+	const { register, handleSubmit, formState: { errors, isSubmitting }} = form;
+	
+	return (
+		<form onSubmit={handleSubmit(() => {...})}>
+			<Input {...register("value1")}>
+			<Input {...register("value2")}>
+		</form>
+	);
+}
+```
+
+### Error Handling ❌
+--To Be Implemented--
+
+### API Clients 🧑‍💼
+Since Postboxd uses both a local and an external API, in order to cleanly configure API clients use the createApiClient function at /lib/api-client.ts . It returns an apiClient function based on provided configuration parameters, which can then be used to make API calls. We use it to create a standardised pattern of handling API calls throughout the entire application, without repeating code. API client are to be initialised in /services/client.ts . Each API client can be configured with it’s own default url, headers, and other necessary 
+parameters.
+
+```tsx
+import { createApiClient } from "@/lib/api-client";
+import { dataSchema } from "@/lib/validations/data";
+
+const myApi = createApiClient({
+	baseUrl: 'https://myApi.com/'
+	defaultHeaders: {
+		'Authorization': 'Bearer myKey'
+		'Content-Type': 'application/json'
+	}
+});
+
+const user = await myApi<T>('/users/me', dataSchema);
+```
+
+### Services 🛠️
+To neatly define and organise necessary API calls, we package them into services. All services must reside in the /services directory.
+
+```tsx
+import { myApi } from "./client";
+import { dataValues, dataSchema } from "@/lib/validations/data";
+import { DataType } from "@/types/data";
+
+export const Service = {
+	getData: () => myApi<DataType>('/data', dataSchema, {
+		method: "GET"
+	}),
+    postData: (data: dataValues) => myApi<DataType>('/data', dataSchema, {
+            method: "POST",
+            body: JSON.stringify(data)
+        })
+};
+```
