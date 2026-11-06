@@ -1,7 +1,7 @@
 "use client";
 
 import { signUpSchema, signUpValues } from "@/lib/validations/auth";
-import { useAuth } from "@/providers/root-provider";
+import { useAuth } from "@/providers/auth-provider";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Field, FieldGroup, FieldSet } from "../ui/field";

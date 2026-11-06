@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { Search, Bell } from "lucide-react"
 import { cn } from "@/lib/utils/styles"
 import SignInDialog from "./dialogs/sign-in-dialog"
-import { useAuth } from "@/providers/root-provider"
+import { useAuth } from "@/providers/auth-provider"
 import ProfileMenu from "./profile-menu"
 
 const navLinks = [

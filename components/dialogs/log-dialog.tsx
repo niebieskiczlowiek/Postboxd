@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { useState } from "react";
 import { Button } from "../ui/button";
 import ReviewForm from "../forms/review-form";
-import { useAuth } from "@/providers/root-provider";
+import { useAuth } from "@/providers/auth-provider";
 import ControlledDialog from "./controlled-dialog";
 
 interface LogDialogProps {

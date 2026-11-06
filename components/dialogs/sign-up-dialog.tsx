@@ -1,7 +1,7 @@
 "use client";
 
 import { signUpSchema, signUpValues } from "@/lib/validations/auth";
-import { useAuth } from "@/providers/root-provider";
+import { useAuth } from "@/providers/auth-provider";
 import { DialogClose,  DialogFooter } from "../ui/dialog";
 import { Button } from "../ui/button";
 import SignUpForm from "../forms/sign-up-form";
