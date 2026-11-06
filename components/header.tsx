@@ -2,13 +2,11 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Search, Bell, Menu, X } from "lucide-react"
-import { useState } from "react"
+import { Search, Bell } from "lucide-react"
 import { cn } from "@/lib/utils/styles"
 import SignInDialog from "./dialogs/sign-in-dialog"
 import { useAuth } from "@/providers/root-provider"
 import ProfileMenu from "./profile-menu"
-import { AuthService } from "@/services/auth"
 
 const navLinks = [
     { label: "Films", href: "/films" },

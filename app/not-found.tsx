@@ -1,4 +1,3 @@
-import "./globals.css";
 import Link from "next/link"
 import { Film, Home, Search } from "lucide-react"
 

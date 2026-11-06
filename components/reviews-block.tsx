@@ -1,7 +1,7 @@
-import { TMDBReviewSet } from "@/types/review";
 import Link from "next/link";
+import { TMDBReviewSet } from "@/types/review";
 import { StarRating } from "./star-rating";
-import { Heart, MessageSquare } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 
 interface ReviewsBlockProps {
     title: string,

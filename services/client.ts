@@ -1,5 +1,4 @@
 import { createApiClient } from "@/lib/api-client";
-import * as z from "zod";
 
 const TMDB_BASE_URL = process.env.TMDB_API_BASE_URL
 const TMDB_API_KEY = process.env.TMDB_API_READ_ACCESS_TOKEN

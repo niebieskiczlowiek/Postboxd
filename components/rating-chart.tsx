@@ -1,28 +1,26 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts"
-
+import { 
+  Bar, 
+  BarChart, 
+  Tooltip, 
+  XAxis, 
+  YAxis } from "recharts"
 import {
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+  CardTitle } from "@/components/ui/card"
 import {
   ChartContainer,
-  ChartTooltip,
   ChartTooltipContent,
-  type ChartConfig,
-} from "@/components/ui/chart"
+  type ChartConfig } from "@/components/ui/chart"
 import { StarRating } from "./star-rating"
 import { Rating } from "@/types/review"
 
 export const description = "A bar chart"
-
-
 
 const chartConfig = {
   desktop: {

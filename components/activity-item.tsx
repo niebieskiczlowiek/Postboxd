@@ -1,7 +1,12 @@
-import { Film } from "@/types/film";
 import Link from "next/link";
+import { Film } from "@/types/film";
 import { StarRating } from "./star-rating";
-import { Item, ItemDescription, ItemTitle, ItemMedia, ItemActions } from "./ui/item";
+import { 
+  Item, 
+  ItemDescription, 
+  ItemMedia, 
+  ItemActions 
+} from "./ui/item";
 
 interface ActivityItemProps {
     user: string,
