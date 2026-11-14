@@ -29,8 +29,7 @@ export const metadata: Metadata = {
 interface CustomSession extends JWTPayload {
   id: number,
   iat: number,
-  exp: number,
-  email: string,
+  exp: number
 }
 
 export default async function RootLayout({
@@ -38,11 +37,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  /*
+  Calling getSession() here, a server component, allows for better performance and faster loading.
+  */
   const session = (await getSession()) as CustomSession | null;
   let user = null;
-  if (session) {
-    user = await AuthService.getUser(session.id);
-  }
+  if (session) user = await AuthService.getUser(session.id);
 
   return (
     <html lang="en">

@@ -40,7 +40,7 @@ export const createToken = async (payload: JWTPayload): Promise<string> => {
     return await new SignJWT(payload)
         .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()
-        .setExpirationTime("2h")
+        .setExpirationTime("15m")
         .sign(SECRET)
 }
 
@@ -58,6 +58,27 @@ export const verifyToken = async (token: string): Promise<JWTPayload | null> => 
     } catch(error) {
         return null
     }
+}
+
+/* 
+Creates a new JWT token and saves into a secure cookie
+
+@param id — user's ID
+@param email — user's email
+*/
+export const setSession = async (id: number, email: string) => {
+    const token = await createToken({
+        id: id
+    });
+
+    const cookieStore = await cookies();
+    cookieStore.set("auth-token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 60 * 15, // 15 minutes, pair with refresh token later
+        path: "/",
+    });
 }
 
 /* 
