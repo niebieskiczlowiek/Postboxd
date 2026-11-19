@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import { AuthService } from "@/services/auth";
 import { signInValues, signUpValues } from "@/lib/validations/auth";
 import { User } from "@/types/user";
-import { RootProviderProps } from "./root-provider";
 
 interface AuthContextValue {
     user: User | null;
@@ -30,14 +29,25 @@ export function useAuth(): AuthContextValue {
     return context;
 }
 
+interface AuthProviderProps {
+    children: React.ReactNode,
+    initialUser: User | null,
+    token: string | undefined,
+}
+
 /* 
 AuthProvider defines the value of AuthContext.
 We use it to define the entire AuthContext value in a single place,
 and put it all in a single, ready-to-use AuthProvider wrapper.
 
-AuthContext and AuthProvider should probably be moved to a separate auth-provider module.
 */
-export const AuthProvider = ({ children, initialUser }: RootProviderProps) => {
+export const AuthProvider = ({ children, initialUser, token }: AuthProviderProps) => {
+    const getSession = () => {
+        console.log("Auth provider getSession");
+        if (token) return AuthService.getSession(token);
+        else return AuthService.getSession("");
+    }
+
     /* 
     Use useQuery() to call getSession() and cache the results. 
     No need to call it again later, just grab the cached results.
@@ -47,7 +57,7 @@ export const AuthProvider = ({ children, initialUser }: RootProviderProps) => {
     */
     const { data: user, isLoading } = useQuery({
         queryKey: ['auth-user'],
-        queryFn: AuthService.getSession,
+        queryFn: getSession,
         initialData: initialUser,
         staleTime: 1000 * 60 * 5,
     });
@@ -97,4 +107,4 @@ export const AuthProvider = ({ children, initialUser }: RootProviderProps) => {
             {children}
         </AuthContext.Provider>
     )
-}
+};

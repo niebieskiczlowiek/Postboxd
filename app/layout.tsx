@@ -10,6 +10,7 @@ import { RootProvider } from "@/providers/root-provider";
 import { getSession } from "@/lib/auth";
 import { AuthService } from "@/services/auth";
 import { JWTPayload } from "jose";
+import { cookies } from "next/headers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,18 +40,27 @@ export default async function RootLayout({
 }>) {
 
   /*
+  Loading the auth-token here on server side, because AuthProvider needs it to make requests to API
+  */
+  const cookieStore = await cookies();
+  let token = cookieStore.get("auth-token")?.value;
+  if (!token) token = "";
+
+  /*
   Calling getSession() here, a server component, allows for better performance and faster loading.
+  This seemed to be the problem. Layout calls getUser (that's why it was getting /api/users/3 in proxy)
+  but it didnt pass the token to the endpoint. Bug fixed, but there might be a cleaner way to handle things now.
   */
   const session = (await getSession()) as CustomSession | null;
   let user = null;
-  if (session) user = await AuthService.getUser(session.id);
+  if (session) user = await AuthService.getUser(session.id, token);
 
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <RootProvider initialUser={user}>
+        <RootProvider initialUser={user} token={token}>
           <Header />
           <main className="min-h-screen">
             <TooltipProvider delayDuration={400}>

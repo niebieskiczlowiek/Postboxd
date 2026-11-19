@@ -19,6 +19,23 @@ export const AuthService = {
         });
     },
     signOut: async () => localApi<void>(`${serverOrigin.url}/api/auth/logout`, z.any(), { method: "POST" }).catch(() => null),
-    getSession: () => localApi<User>(`${serverOrigin.url}/api/users/me`, UserSchema, { method: "GET" }).catch(() => null),
-    getUser: (id: number) => localApi<User>(`${serverOrigin.url}/api/users/${id}`, UserSchema, { method: "GET" }).catch(() => null)
+    /*
+    Add a token parameter and a Cookie header to access protected endpoints.
+
+    To Do:
+    Might be a better way to do this, because this way, we have to provide the token for each function separately.
+    Maybe just update localApi client to always include the cookie header, even if there is no token. 
+    */
+    getSession: (token: string) => localApi<User>(`${serverOrigin.url}/api/users/me`, UserSchema, { 
+            method: "GET",
+            headers: {
+                'Cookie': `auth-token=${token}`,
+            }
+        }).catch(() => null),
+    getUser: (id: number, token: string) => localApi<User>(`${serverOrigin.url}/api/users/${id}`, UserSchema, { 
+            method: "GET",
+            headers: {
+                'Cookie': `auth-token=${token}`,
+            }
+        }).catch(() => null)
 }
